@@ -13,22 +13,27 @@ namespace EmojiWifiWindows.Services
         private const string ApiSecret = "ch411kMtTRW7z_3XEUlmiw";
         private const string Endpoint = "https://www.google-analytics.com/mp/collect";
 
-        private readonly string _clientId;
+        private readonly SettingsService _settingsService;
         private readonly HttpClient _httpClient;
 
-        public AnalyticsService(string clientId)
+        public AnalyticsService(SettingsService settingsService)
         {
-            _clientId = clientId;
+            _settingsService = settingsService;
             _httpClient = new HttpClient();
         }
 
         public async Task LogEvent(string eventName, object? parameters = null)
         {
+            if (!_settingsService.Settings.AnalyticsEnabled)
+            {
+                return;
+            }
+
             try
             {
                 var payload = new
                 {
-                    client_id = _clientId,
+                    client_id = _settingsService.Settings.AnalyticsClientId,
                     events = new[]
                     {
                         new

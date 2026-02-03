@@ -64,6 +64,20 @@ namespace EmojiWifiWindows.ViewModels
         [ObservableProperty]
         private bool _isEulaVisible;
 
+        public bool AnalyticsEnabled
+        {
+            get => _settingsService.Settings.AnalyticsEnabled;
+            set
+            {
+                if (_settingsService.Settings.AnalyticsEnabled != value)
+                {
+                    _settingsService.Settings.AnalyticsEnabled = value;
+                    _settingsService.SaveSettings();
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         public MainViewModel()
         {
             _emojiService = new EmojiDataService();
@@ -73,7 +87,7 @@ namespace EmojiWifiWindows.ViewModels
             _settingsService = new SettingsService();
             
             // Initialize Analytics
-            _analyticsService = new AnalyticsService(_settingsService.Settings.AnalyticsClientId);
+            _analyticsService = new AnalyticsService(_settingsService);
 
             // Check EULA status
             IsEulaVisible = !_settingsService.Settings.EulaAccepted;

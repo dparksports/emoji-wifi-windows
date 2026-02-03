@@ -7,6 +7,7 @@ namespace EmojiWifiWindows.Services
     public class AppSettings
     {
         public bool EulaAccepted { get; set; } = false;
+        public bool AnalyticsEnabled { get; set; } = true;
         public string AnalyticsClientId { get; set; } = Guid.NewGuid().ToString();
     }
 
