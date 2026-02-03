@@ -149,7 +149,7 @@
                 <!-- App Header -->
                 <StackPanel Grid.Row="0" Margin="24,30,24,20">
                     <TextBlock Text="EmojiWifi" FontSize="26" FontWeight="Bold" Foreground="{StaticResource TextPrimary}"/>
-                    <TextBlock Text="v1.2 Windows" FontSize="12" Foreground="{StaticResource TextSecondary}" Margin="2,4,0,0"/>
+                    <TextBlock Text="v1.2.1 Windows" FontSize="12" Foreground="{StaticResource TextSecondary}" Margin="2,4,0,0"/>
                 </StackPanel>
 
                 <!-- Navigation -->
@@ -216,7 +216,7 @@
                          
                          <StackPanel>
                              <TextBlock Text="Style" FontSize="12" Foreground="{StaticResource TextSecondary}" Margin="0,0,0,6"/>
-                             <ComboBox SelectedIndex="{Binding SelectedStyle, Mode=TwoWay}" Padding="10,8" FontSize="14" BorderThickness="1" BorderBrush="#E0E0E0">
+                             <ComboBox SelectedIndex="{Binding SelectedStyleIndex, Mode=TwoWay}" Padding="10,8" FontSize="14" BorderThickness="1" BorderBrush="#E0E0E0">
                                   <ComboBoxItem Content="Single Emoji"/>
                                   <ComboBoxItem Content="Emoji Combination"/>
                                   <ComboBoxItem Content="Random Length"/>

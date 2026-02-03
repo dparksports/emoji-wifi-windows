@@ -236,6 +236,21 @@ namespace EmojiWifiWindows.ViewModels
             }
         }
 
+        public int SelectedStyleIndex
+        {
+            get => (int)SelectedStyle;
+            set
+            {
+                if ((int)SelectedStyle != value)
+                {
+                    SelectedStyle = (WifiStyle)value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        partial void OnSelectedStyleChanged(WifiStyle value) => OnPropertyChanged(nameof(SelectedStyleIndex));
+
         partial void OnPasswordLengthChanged(double value) => RegeneratePassword();
         partial void OnIncludeUpperChanged(bool value) => RegeneratePassword();
         partial void OnIncludeLowerChanged(bool value) => RegeneratePassword();
