@@ -57,7 +57,4 @@ The project is built using:
 
 This project is licensed under the Apache 2.0 License - see the [LICENSE](LICENSE) file for details.
 
-## Credits
-
-Original Mac Application by [dparksports](https://github.com/dparksports).
-Ported to Windows by Antigravity.
+Made with ❤️ in California
