@@ -217,8 +217,8 @@
                          <StackPanel>
                              <TextBlock Text="Style" FontSize="12" Foreground="{StaticResource TextSecondary}" Margin="0,0,0,6"/>
                              <ComboBox SelectedIndex="{Binding SelectedStyle, Mode=TwoWay}" Padding="10,8" FontSize="14" BorderThickness="1" BorderBrush="#E0E0E0">
-                                  <ComboBoxItem Content="Emoji Combination"/>
                                   <ComboBoxItem Content="Single Emoji"/>
+                                  <ComboBoxItem Content="Emoji Combination"/>
                                   <ComboBoxItem Content="Random Length"/>
                              </ComboBox>
                          </StackPanel>
