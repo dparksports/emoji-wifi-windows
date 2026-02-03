@@ -4,6 +4,7 @@ namespace EmojiWifiWindows.Models
     {
         SingleEmoji,
         Combination,
-        RandomLength
+        RandomLength,
+        Manual
     }
 }

@@ -22,8 +22,25 @@ namespace EmojiWifiWindows.ViewModels
         [ObservableProperty]
         private string? _generatedWifiName;
 
+        partial void OnGeneratedWifiNameChanged(string? value)
+        {
+            if (SelectedStyle == WifiStyle.Manual)
+            {
+                UpdateQrCode();
+            }
+        }
+
         [ObservableProperty]
         private string? _generatedPassword;
+
+        partial void OnGeneratedPasswordChanged(string? value)
+        {
+            if (SelectedStyle == WifiStyle.Manual)
+            {
+                PasswordLengthDescription = value != null ? $"{value.Length} characters" : "0 characters";
+                UpdateQrCode();
+            }
+        }
 
         [ObservableProperty]
         private string? _passwordLengthDescription;
@@ -135,6 +152,11 @@ namespace EmojiWifiWindows.ViewModels
                     break;
                 case WifiStyle.RandomLength:
                     GeneratedWifiName = _emojiService.GetRandomLengthEmoji();
+                    break;
+                case WifiStyle.Manual:
+                    // Preserve existing or clear? Let's keep it to allow editing or start fresh.
+                    // If it was null, make it empty string to avoid null issues in text box
+                    if (GeneratedWifiName == null) GeneratedWifiName = string.Empty;
                     break;
             }
 

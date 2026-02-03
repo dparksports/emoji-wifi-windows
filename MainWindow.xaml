@@ -150,7 +150,7 @@
                 <!-- App Header -->
                 <StackPanel Grid.Row="0" Margin="24,30,24,20">
                     <TextBlock Text="EmojiWifi" FontSize="26" FontWeight="Bold" Foreground="{StaticResource TextPrimary}"/>
-                    <TextBlock Text="v1.3.6 Windows" FontSize="12" Foreground="{StaticResource TextSecondary}" Margin="2,4,0,0"/>
+                    <TextBlock Text="v1.3.7 Windows" FontSize="12" Foreground="{StaticResource TextSecondary}" Margin="2,4,0,0"/>
                 </StackPanel>
 
                 <!-- Navigation -->
@@ -221,6 +221,7 @@
                                   <ComboBoxItem Content="Single Emoji"/>
                                   <ComboBoxItem Content="Emoji Combination"/>
                                   <ComboBoxItem Content="Random Length"/>
+                                  <ComboBoxItem Content="Manual Entry"/>
                              </ComboBox>
                          </StackPanel>
                     </Grid>
@@ -236,7 +237,35 @@
                                          <ColumnDefinition Width="*"/>
                                          <ColumnDefinition Width="Auto"/>
                                      </Grid.ColumnDefinitions>
-                                     <emoji:TextBlock Text="{Binding GeneratedWifiName}" FontSize="32" VerticalAlignment="Center"/>
+                                     
+                                     <!-- Read-only View -->
+                                     <emoji:TextBlock Text="{Binding GeneratedWifiName}" FontSize="32" VerticalAlignment="Center">
+                                         <emoji:TextBlock.Style>
+                                             <Style TargetType="emoji:TextBlock">
+                                                 <Setter Property="Visibility" Value="Visible"/>
+                                                 <Style.Triggers>
+                                                     <DataTrigger Binding="{Binding SelectedStyleIndex}" Value="3"> <!-- 3 is Manual -->
+                                                         <Setter Property="Visibility" Value="Collapsed"/>
+                                                     </DataTrigger>
+                                                 </Style.Triggers>
+                                             </Style>
+                                         </emoji:TextBlock.Style>
+                                     </emoji:TextBlock>
+                                     
+                                     <!-- Editable View -->
+                                     <TextBox Text="{Binding GeneratedWifiName, UpdateSourceTrigger=PropertyChanged}" FontSize="20" VerticalAlignment="Center">
+                                         <TextBox.Style>
+                                             <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+                                                 <Setter Property="Visibility" Value="Collapsed"/>
+                                                 <Style.Triggers>
+                                                     <DataTrigger Binding="{Binding SelectedStyleIndex}" Value="3">
+                                                         <Setter Property="Visibility" Value="Visible"/>
+                                                     </DataTrigger>
+                                                 </Style.Triggers>
+                                             </Style>
+                                         </TextBox.Style>
+                                     </TextBox>
+
                                      <Button Grid.Column="1" Command="{Binding CopyNameCommand}" Content="Copy" Padding="12,6" FontSize="12" Background="#F0F0F0" Foreground="{StaticResource TextPrimary}"/>
                                  </Grid>
                              </StackPanel>
@@ -249,14 +278,37 @@
                                          <ColumnDefinition Width="*"/>
                                          <ColumnDefinition Width="Auto"/>
                                      </Grid.ColumnDefinitions>
-                                     <TextBox Text="{Binding GeneratedPassword, Mode=OneWay}" IsReadOnly="True" FontFamily="Consolas" FontSize="16" BorderThickness="1" Padding="10" Background="#FAFAFA" Foreground="#333"/>
+                                     <TextBox Text="{Binding GeneratedPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontFamily="Consolas" FontSize="16" BorderThickness="1" Padding="10" Background="#FAFAFA" Foreground="#333">
+                                         <TextBox.Style>
+                                             <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+                                                 <Setter Property="IsReadOnly" Value="True"/>
+                                                 <Style.Triggers>
+                                                     <DataTrigger Binding="{Binding SelectedStyleIndex}" Value="3">
+                                                         <Setter Property="IsReadOnly" Value="False"/>
+                                                         <Setter Property="Background" Value="White"/>
+                                                     </DataTrigger>
+                                                 </Style.Triggers>
+                                             </Style>
+                                         </TextBox.Style>
+                                     </TextBox>
                                      <Button Grid.Column="1" Command="{Binding CopyPasswordCommand}" Content="Copy" Margin="10,0,0,0" Padding="12,6" FontSize="12" Background="#F0F0F0" Foreground="{StaticResource TextPrimary}"/>
                                  </Grid>
                                  <TextBlock Text="{Binding PasswordLengthDescription}" FontSize="12" Foreground="{StaticResource TextSecondary}" Margin="0,4,0,0" HorizontalAlignment="Right"/>
                              </StackPanel>
 
                              <!-- Action Button -->
-                             <Button Command="{Binding GenerateWifiCommand}" Content="✨ Generate New WiFi Identity" HorizontalAlignment="Stretch" Margin="0,0,0,25"/>
+                             <Button Command="{Binding GenerateWifiCommand}" Content="✨ Generate New WiFi Identity" HorizontalAlignment="Stretch" Margin="0,0,0,25">
+                                 <Button.Style>
+                                     <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                                         <Setter Property="Visibility" Value="Visible"/>
+                                         <Style.Triggers>
+                                             <DataTrigger Binding="{Binding SelectedStyleIndex}" Value="3">
+                                                 <Setter Property="Visibility" Value="Collapsed"/>
+                                             </DataTrigger>
+                                         </Style.Triggers>
+                                     </Style>
+                                 </Button.Style>
+                             </Button>
 
                              <!-- QR Code Area -->
                              <Border Background="White" HorizontalAlignment="Center" Padding="15" CornerRadius="12" BorderBrush="#EEEEEE" BorderThickness="1">
