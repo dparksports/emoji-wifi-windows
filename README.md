@@ -39,6 +39,10 @@
    dotnet run
    ```
 
+## Download
+
+[**Download Latest Release (Windows x64)**](https://github.com/dparksports/emoji-wifi-windows/releases/latest/download/EmojiWifiWindows.exe)
+
 ## Development
 
 The project is built using:

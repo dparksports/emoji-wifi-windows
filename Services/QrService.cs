@@ -27,7 +27,7 @@ namespace EmojiWifiWindows.Services
             }
         }
 
-        public (string ssid, string password) ParseWifiQrCode(string filePath)
+        public (string? ssid, string? password) ParseWifiQrCode(string filePath)
         {
             try
             {
@@ -51,11 +51,11 @@ namespace EmojiWifiWindows.Services
             return (null, null);
         }
 
-        private (string ssid, string password) ParseWifiPayload(string payload)
+        private (string? ssid, string? password) ParseWifiPayload(string payload)
         {
             // Expected: WIFI:T:WPA;S:ssid;P:password;H:false;;
-            string ssid = null;
-            string password = null;
+            string? ssid = null;
+            string? password = null;
 
             if (payload.StartsWith("WIFI:"))
             {

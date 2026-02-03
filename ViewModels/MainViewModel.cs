@@ -69,6 +69,8 @@ namespace EmojiWifiWindows.ViewModels
             _combinations = _emojiService.GetAllCombinations();
             FilteredCombinations = _combinations;
 
+            SelectedStyle = WifiStyle.SingleEmoji;
+
             GenerateWifi(); // Initial generation
         }
 
