@@ -359,5 +359,50 @@
 
             </Grid>
         </Border>
+        <!-- EULA Overlay -->
+        <Grid Grid.ColumnSpan="2" Background="#99000000" Visibility="{Binding IsEulaVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Border Background="White" CornerRadius="12" Width="500" Height="400" Padding="30" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="20" ShadowDepth="0" Opacity="0.4"/>
+                </Border.Effect>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="End User License Agreement" FontSize="20" FontWeight="Bold" Margin="0,0,0,20"/>
+
+                    <ScrollViewer Grid.Row="1" Margin="0,0,0,20" VerticalScrollBarVisibility="Auto">
+                        <TextBlock TextWrapping="Wrap" FontSize="14" Foreground="#333">
+                            <TextBlock.Text>
+                                NOTE: By using this application, you agree to track usage data via Google Analytics (Firebase). This data is used solely to improve the application experience.
+                                
+                                
+                                LICENSE AGREEMENT
+                                
+                                1. ACCEPTANCE
+                                By using EmojiWifi, you agree to be bound by the terms of this agreement.
+                                
+                                2. DATA COLLECTION
+                                This application collects anonymous usage data using Google Analytics for Firebase to help us improve the app. No personally identifiable information (PII) is collected or stored.
+                                
+                                3. DISCLAIMER
+                                THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED.
+                                
+                                4. TERMINATION
+                                You may terminate this agreement at any time by uninstalling the application.
+                            </TextBlock.Text>
+                        </TextBlock>
+                    </ScrollViewer>
+
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Content="Decline" Command="{Binding DeclineEulaCommand}" Background="Transparent" Foreground="Red" Margin="0,0,10,0"/>
+                        <Button Content="I Agree" Command="{Binding AcceptEulaCommand}" Width="100"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
     </Grid>
 </Window>

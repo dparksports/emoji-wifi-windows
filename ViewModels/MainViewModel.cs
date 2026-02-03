@@ -16,6 +16,8 @@ namespace EmojiWifiWindows.ViewModels
         private readonly PasswordService _passwordService;
         private readonly QrService _qrService;
         private readonly WifiService _wifiService;
+        private readonly SettingsService _settingsService;
+        private readonly AnalyticsService _analyticsService;
 
         [ObservableProperty]
         private string _generatedWifiName;
@@ -59,12 +61,22 @@ namespace EmojiWifiWindows.ViewModels
         [ObservableProperty]
         private List<(string Name, string Emojis)> _filteredCombinations;
 
+        [ObservableProperty]
+        private bool _isEulaVisible;
+
         public MainViewModel()
         {
             _emojiService = new EmojiDataService();
             _passwordService = new PasswordService();
             _qrService = new QrService();
             _wifiService = new WifiService();
+            _settingsService = new SettingsService();
+            
+            // Initialize Analytics
+            _analyticsService = new AnalyticsService(_settingsService.Settings.AnalyticsClientId);
+
+            // Check EULA status
+            IsEulaVisible = !_settingsService.Settings.EulaAccepted;
 
             _combinations = _emojiService.GetAllCombinations();
             FilteredCombinations = _combinations;
@@ -72,6 +84,27 @@ namespace EmojiWifiWindows.ViewModels
             SelectedStyle = WifiStyle.SingleEmoji;
 
             GenerateWifi(); // Initial generation
+            
+            if (!IsEulaVisible)
+            {
+                _ = _analyticsService.LogEvent("app_launch");
+            }
+        }
+
+        [RelayCommand]
+        public async Task AcceptEula()
+        {
+            _settingsService.Settings.EulaAccepted = true;
+            _settingsService.SaveSettings();
+            IsEulaVisible = false;
+            await _analyticsService.LogEvent("eula_accepted");
+            await _analyticsService.LogEvent("app_launch");
+        }
+
+        [RelayCommand]
+        public void DeclineEula()
+        {
+            Application.Current.Shutdown();
         }
 
         [RelayCommand]
@@ -93,6 +126,8 @@ namespace EmojiWifiWindows.ViewModels
 
             // 2. Generate Password
             RegeneratePassword();
+            
+            _ = _analyticsService.LogEvent("generate_wifi", new { style = SelectedStyle.ToString() });
         }
 
         [RelayCommand]
@@ -132,12 +167,14 @@ namespace EmojiWifiWindows.ViewModels
         public void CopyName()
         {
             Clipboard.SetText(GeneratedWifiName ?? string.Empty);
+            _ = _analyticsService.LogEvent("copy_name");
         }
 
         [RelayCommand]
         public void CopyPassword()
         {
             Clipboard.SetText(GeneratedPassword ?? string.Empty);
+            _ = _analyticsService.LogEvent("copy_password");
         }
 
         [RelayCommand]
@@ -146,6 +183,7 @@ namespace EmojiWifiWindows.ViewModels
             JoinStatusMessage = "Connecting...";
             string result = await _wifiService.ConnectToNetwork(GeneratedWifiName ?? string.Empty, GeneratedPassword ?? string.Empty);
             JoinStatusMessage = result;
+            await _analyticsService.LogEvent("join_wifi", new { status = result });
         }
 
         [RelayCommand]
@@ -162,10 +200,12 @@ namespace EmojiWifiWindows.ViewModels
                     GeneratedPassword = result.password ?? "";
                     UpdateQrCode();
                     JoinStatusMessage = "QR Code Imported successfully!";
+                    _ = _analyticsService.LogEvent("import_qr_success");
                 }
                 else
                 {
                     JoinStatusMessage = "Could not find Wi-Fi QR code in image.";
+                    _ = _analyticsService.LogEvent("import_qr_failed");
                 }
             }
         }
