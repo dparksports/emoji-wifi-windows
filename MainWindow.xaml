@@ -6,7 +6,7 @@
         xmlns:vm="clr-namespace:EmojiWifiWindows.ViewModels"
         xmlns:models="clr-namespace:EmojiWifiWindows.Models"
         mc:Ignorable="d"
-        Title="Emoji Wifi" Height="700" Width="950"
+        Title="Emoji Wifi" Height="840" Width="950"
         WindowStartupLocation="CenterScreen"
         Background="#F3F3F3">
 
