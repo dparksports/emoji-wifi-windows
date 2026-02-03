@@ -43,7 +43,7 @@
 
 ## Download
 
-[**Download v1.3.6 (Windows x64 Clean Zip)**](https://github.com/dparksports/emoji-wifi-windows/releases/download/v1.3.6/EmojiWifiWindows_v1.3.6_Clean.zip)
+[**Download v1.3.7 (Windows x64 Clean Zip)**](https://github.com/dparksports/emoji-wifi-windows/releases/download/v1.3.7/EmojiWifiWindows_v1.3.7_Clean.zip)
 
 ## Development
 
