@@ -107,7 +107,7 @@ namespace EmojiWifiWindows.Services
 
         public string GetDescription(string emoji)
         {
-            if (_singleEmojis.TryGetValue(emoji, out string desc))
+            if (_singleEmojis.TryGetValue(emoji, out string? desc))
             {
                 return desc;
             }

@@ -105,7 +105,7 @@ namespace EmojiWifiWindows.ViewModels
         {
             if (string.IsNullOrEmpty(GeneratedWifiName) || string.IsNullOrEmpty(GeneratedPassword))
             {
-                QrCodeImage = null;
+                QrCodeImage = null!;
                 return;
             }
 
@@ -129,20 +129,20 @@ namespace EmojiWifiWindows.ViewModels
         [RelayCommand]
         public void CopyName()
         {
-            Clipboard.SetText(GeneratedWifiName);
+            Clipboard.SetText(GeneratedWifiName ?? string.Empty);
         }
 
         [RelayCommand]
         public void CopyPassword()
         {
-            Clipboard.SetText(GeneratedPassword);
+            Clipboard.SetText(GeneratedPassword ?? string.Empty);
         }
 
         [RelayCommand]
-        public async void JoinWifi()
+        public async Task JoinWifi()
         {
             JoinStatusMessage = "Connecting...";
-            string result = await _wifiService.ConnectToNetwork(GeneratedWifiName, GeneratedPassword);
+            string result = await _wifiService.ConnectToNetwork(GeneratedWifiName ?? string.Empty, GeneratedPassword ?? string.Empty);
             JoinStatusMessage = result;
         }
 
