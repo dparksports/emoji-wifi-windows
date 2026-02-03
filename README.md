@@ -14,8 +14,10 @@
 - **QR Code Support**: 
   - Generate WiFi QR codes to share globally.
   - Import QR codes from images to retrieve credentials.
+- **Styles**: Choose between *Emoji Combination*, *Single Emoji*, or *Random Length* styles for your network name.
+- **Privacy First**: Fully offline generation logic. Analytics can be opted-out in Settings. EULA included.
 - **Wi-Fi Connection**: Simulate joining a network (uses `netsh` integration logic).
-- **Modern UI**: Clean WPF interface inspired by the original Mac application.
+- **Modern UI**: Clean, responsive, and beautiful interface designed for Windows 11.
 
 ## Getting Started
 
@@ -41,7 +43,7 @@
 
 ## Download
 
-[**Download Latest Release (Windows x64)**](https://github.com/dparksports/emoji-wifi-windows/releases/latest/download/EmojiWifiWindows.exe)
+[**Download v1.1.0 (Windows x64)**](https://github.com/dparksports/emoji-wifi-windows/releases/download/v1.1.0/EmojiWifiWindows.exe)
 
 ## Development
 
