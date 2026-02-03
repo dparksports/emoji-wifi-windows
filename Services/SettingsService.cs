@@ -17,7 +17,7 @@ namespace EmojiWifiWindows.Services
             "EmojiWifiWindows",
             "settings.json");
 
-        public AppSettings Settings { get; private set; }
+        public AppSettings Settings { get; private set; } = new AppSettings();
 
         public SettingsService()
         {
@@ -48,8 +48,8 @@ namespace EmojiWifiWindows.Services
         {
             try
             {
-                string dir = Path.GetDirectoryName(SettingsPath);
-                if (!Directory.Exists(dir))
+                string? dir = Path.GetDirectoryName(SettingsPath);
+                if (dir != null && !Directory.Exists(dir))
                 {
                     Directory.CreateDirectory(dir);
                 }

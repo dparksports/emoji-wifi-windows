@@ -20,16 +20,16 @@ namespace EmojiWifiWindows.ViewModels
         private readonly AnalyticsService _analyticsService;
 
         [ObservableProperty]
-        private string _generatedWifiName;
+        private string? _generatedWifiName;
 
         [ObservableProperty]
-        private string _generatedPassword;
+        private string? _generatedPassword;
 
         [ObservableProperty]
-        private string _passwordLengthDescription;
+        private string? _passwordLengthDescription;
 
         [ObservableProperty]
-        private BitmapImage _qrCodeImage;
+        private BitmapImage? _qrCodeImage;
 
         [ObservableProperty]
         private WifiStyle _selectedStyle;
@@ -50,10 +50,10 @@ namespace EmojiWifiWindows.ViewModels
         private bool _includeSpecial = true;
 
         [ObservableProperty]
-        private string _joinStatusMessage;
+        private string _joinStatusMessage = string.Empty;
 
         [ObservableProperty]
-        private string _searchText;
+        private string _searchText = string.Empty;
 
         [ObservableProperty]
         private List<(string Name, string Emojis)> _combinations;

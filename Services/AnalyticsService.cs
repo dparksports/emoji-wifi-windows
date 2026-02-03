@@ -22,7 +22,7 @@ namespace EmojiWifiWindows.Services
             _httpClient = new HttpClient();
         }
 
-        public async Task LogEvent(string eventName, object parameters = null)
+        public async Task LogEvent(string eventName, object? parameters = null)
         {
             try
             {

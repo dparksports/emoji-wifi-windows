@@ -6,8 +6,8 @@ namespace EmojiWifiWindows.Services
 {
     public class EmojiDataService
     {
-        private List<(string Name, string Emojis)> _combinations;
-        private Dictionary<string, string> _singleEmojis;
+        private List<(string Name, string Emojis)> _combinations = new List<(string Name, string Emojis)>();
+        private Dictionary<string, string> _singleEmojis = new Dictionary<string, string>();
 
         public EmojiDataService()
         {
