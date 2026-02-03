@@ -2,6 +2,8 @@
 
 **Emoji Wifi** is a fun and modern Windows application that generates emoji-only WiFi names. It is a native port of the [Mac version](https://github.com/dparksports/emoji-wifi-mac-v3), built with WPF and .NET.
 
+![EmojiWifi Screenshot](screenshots/app_screenshot.png)
+
 ## Features
 
 - **Generate Emoji Names**:
