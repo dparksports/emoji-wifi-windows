@@ -2,7 +2,7 @@
 
 **Emoji Wifi** for Windows allows you to turn boring network names into fun, expressive emoji identities. Whether you want a "Space Station" 🚀🛰️🌌 or a "Pizza Party" 🍕🎉, this app makes it easy to generate, secure, and share your new network identity.
 
-![App Icon](app_icon.png)
+![Emoji Wifi Screenshot](screenshots/app_screenshot.png)
 
 ## 🎨 Design Your Network
 
