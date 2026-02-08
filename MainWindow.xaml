@@ -181,7 +181,7 @@
                                 </ContentControl>
                             </Grid>
                             
-                            <TextBlock Text="{Binding GeneratedWifiName}" FontFamily="Segoe UI Emoji" FontSize="16" Margin="0,4,0,8" TextTrimming="CharacterEllipsis"/>
+                            <emoji:TextBlock Text="{Binding GeneratedWifiName}" FontFamily="Segoe UI Emoji" FontSize="16" Margin="0,4,0,8" TextTrimming="CharacterEllipsis"/>
                             
                             <Rectangle Height="1" Fill="#E0E8F0" Margin="0,0,0,8"/>
                             
@@ -467,7 +467,7 @@
                                             </Grid.ColumnDefinitions>
                                             
                                             <StackPanel>
-                                                <TextBlock Text="{Binding WifiName}" FontSize="18" FontFamily="Segoe UI Emoji" FontWeight="SemiBold"/>
+                                                <emoji:TextBlock Text="{Binding WifiName}" FontSize="18" FontFamily="Segoe UI Emoji" FontWeight="SemiBold"/>
                                                 <TextBlock Text="{Binding Password}" FontSize="12" FontFamily="Consolas" Foreground="{StaticResource TextSecondary}" Margin="0,4,0,2"/>
                                                 <TextBlock Text="{Binding Timestamp, StringFormat='Generated: {0:MMM dd, yyyy hh:mm tt}'}" FontSize="11" Foreground="{StaticResource TextSecondary}"/>
                                             </StackPanel>
