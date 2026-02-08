@@ -1,70 +1,60 @@
-# Emoji Wifi for Windows 🚀
+# 📶 Create Your Own WiFi Network with Emoji
 
-**Emoji Wifi** is a modern, fun, and fast Windows application that generates unique WiFi identities using emojis. Built natively with WPF and .NET 10.
+**Emoji Wifi** for Windows allows you to turn boring network names into fun, expressive emoji identities. Whether you want a "Space Station" 🚀🛰️🌌 or a "Pizza Party" 🍕🎉, this app makes it easy to generate, secure, and share your new network identity.
 
-![EmojiWifi Screenshot](screenshots/app_screenshot.png)
+![App Icon](app_icon.png)
 
-## ✨ Features
+## 🎨 Design Your Network
 
-- **Generate Unique Identities**:
-  - **Styles**: Choose from *Combination* (🚀🛰️), *Single Emoji* (🍕), *Random Length*, or *Manual* input.
-  - **Secure Passwords**: Auto-generate strong passwords with customizable complexity (length, symbols, numbers).
-  
-- **QR Code Magic**:
-  - **Generate**: Instantly create WiFi QR codes for easy sharing.
-  - **Import**: Scan existing WiFi QR codes from images to recover credentials.
-  - **History** (New in v1.4): Automatically saves your generated codes. View, reload, or delete past configurations.
+Stop using "NETGEAR-5G" or "xfinity-123". Make your WiFi stand out on every device scan.
 
-- **Smart & Secure**:
-  - **Offline Logic**: All generation happens locally on your machine.
-  - **Private**: Analytics are optional and respect your privacy.
-  - **Compliance**: Built-in EULA and transparency.
+1.  **Generate a Name**:
+    - **Combinations**: Get inspired by curated themes like *Jungle* 🐯🌴 or *Ocean* 🐙🌊.
+    - **Single Emojis**: Go minimal with a single icon like 🏠 or 🔒.
+    - **Manual Control**: Type any emojis you want to create your perfect custom name.
 
-- **Modern UX**:
-  - Beautiful, responsive interface designed for Windows 11.
-  - Dark/Light mode ready (follows system theme).
-  - One-click copy for SSID and Password.
+2.  **Secure It**:
+    - Automatically generate strong, random passwords.
+    - Customize password length and complexity (symbols, numbers) to match your security needs.
+
+3.  **Share It**:
+    - Instantly generate a **WiFi QR Code**.
+    - Friends can scan the code with their phone to join instantly—no typing required.
+    - **New in v1.4.1**: Save your favorite configurations to **History** and reload them anytime.
 
 ## 📦 Download
 
-[**Download v1.4.0 (Windows x64 Clean Zip)**](https://github.com/dparksports/emoji-wifi-windows/releases/download/v1.4.0/EmojiWifiWindows_v1.4.0_Clean.zip)
+[**Download v1.4.1 (Windows x64 Clean Zip)**](https://github.com/dparksports/emoji-wifi-windows/releases/download/v1.4.1/EmojiWifiWindows_v1.4.1_Clean.zip)
 
-## 🚀 Getting Started
+*Just unzip and run `EmojiWifiWindows.exe`!*
 
-### Prerequisites
-- Windows 10 or 11 (64-bit)
-- .NET 8.0+ Runtime (likely already installed)
+## 🚀 Features
 
-### Installation
-1. Download the latest release zip.
-2. Extract to a folder of your choice.
-3. Run `EmojiWifiWindows.exe`.
+- **Creating**:
+  - ✨ **Emoji Styles**: Combination, Single, Random, or Manual.
+  - 🔐 **Secure Passwords**: Built-in cryptographic generator.
+  - 📜 **History**: Auto-saves your creations. Delete ones you don't need.
 
-### Building from Source
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/dparksports/emoji-wifi-windows.git
-   ```
-2. Navigate to the project directory:
-   ```bash
-   cd emoji-wifi-windows
-   ```
-3. Run with .NET CLI:
-   ```bash
-   dotnet run
-   ```
+- **Using**:
+  - 📱 **QR Code Sharing**: The easiest way to get guests online.
+  - 📷 **QR Import**: Lost a password? Scan a saved QR image to retrieve the credentials.
+  - 📋 **One-Click Copy**: Copy SSID or Password to clipboard instantly.
 
-## 🛠️ Tech Stack
+- **Private & Safe**:
+  - **Offline First**: No internet needed to generate or save.
+  - **Privacy**: Analytics are opt-in/opt-out.
+  - **Clean**: Native Windows app, no bloatware.
 
-- **Framework**: .NET 10 (WPF)
-- **Architecture**: MVVM (CommunityToolkit.Mvvm)
-- **QR Generation**: QRCoder
-- **QR Scanning**: ZXing.Net
-- **Emoji Support**: Emoji.Wpf
+## 💻 Tech Stack
 
-## 📄 License
+- **Target**: Windows 10/11 (x64)
+- **Framework**: .NET 10 & WPF
+- **Code**: Native C# with MVVM architecture
+- **Open Source**: Licensed under Apache 2.0
+
+## License
 
 This project is licensed under the Apache 2.0 License - see the [LICENSE](LICENSE) file for details.
 
 ---
-Made with ❤️ in California
+*Make your WiFi smile* 😊

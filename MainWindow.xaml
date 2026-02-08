@@ -9,7 +9,8 @@
         mc:Ignorable="d"
         Title="Emoji Wifi" Height="924" Width="950"
         WindowStartupLocation="CenterScreen"
-        Background="#F3F3F3">
+        Background="#F3F3F3"
+        Icon="pack://application:,,,/app_icon.png">
 
     <Window.DataContext>
         <vm:MainViewModel/>
