@@ -159,6 +159,7 @@
                     <RadioButton x:Name="NavOptions" Content="Password Options" GroupName="Nav" Style="{StaticResource NavButtonStyle}" Tag="Options"/>
                     <RadioButton x:Name="NavCombinations" Content="View Combinations" GroupName="Nav" Style="{StaticResource NavButtonStyle}" Tag="Combinations"/>
                     <RadioButton x:Name="NavImport" Content="Import QR Code" GroupName="Nav" Style="{StaticResource NavButtonStyle}" Tag="Import"/>
+                    <RadioButton x:Name="NavHistory" Content="History" GroupName="Nav" Style="{StaticResource NavButtonStyle}" Tag="History"/>
                     <RadioButton x:Name="NavSettings" Content="Settings" GroupName="Nav" Style="{StaticResource NavButtonStyle}" Tag="Settings"/>
                 </StackPanel>
 
@@ -409,6 +410,123 @@
                              <TextBlock Text="Supports .png, .jpg" Margin="0,15,0,0" Foreground="{StaticResource TextSecondary}" HorizontalAlignment="Center"/>
                          </StackPanel>
                      </Border>
+                </StackPanel>
+
+
+                 <!-- History View -->
+                <StackPanel>
+                     <StackPanel.Style>
+                        <Style TargetType="StackPanel">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsChecked, ElementName=NavHistory}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </StackPanel.Style>
+                    
+                    <TextBlock Text="QR Code History" FontSize="28" FontWeight="SemiBold" Margin="0,0,0,30"/>
+                    
+                    <TextBlock Text="Click any entry to load it" FontSize="14" Foreground="{StaticResource TextSecondary}" Margin="0,0,0,15" Visibility="{Binding HasHistory, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                    
+                    <Border Style="{StaticResource CardStyle}" Padding="0" Visibility="{Binding HasHistory, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <ListBox ItemsSource="{Binding HistoryEntries}" BorderThickness="0" Background="Transparent" MaxHeight="550" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="ListBoxItem">
+                                    <Setter Property="Padding" Value="0"/>
+                                    <Setter Property="Margin" Value="0"/>
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="ListBoxItem">
+                                                <Border Background="{TemplateBinding Background}">
+                                                    <ContentPresenter/>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="#F8F8F8"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ListBox.ItemContainerStyle>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Padding="20,15" BorderThickness="0,0,0,1" BorderBrush="#F0F0F0" Cursor="Hand">
+                                        <Border.InputBindings>
+                                            <MouseBinding MouseAction="LeftClick" Command="{Binding DataContext.LoadFromHistoryCommand, RelativeSource={RelativeSource AncestorType=ListBox}}" CommandParameter="{Binding}"/>
+                                        </Border.InputBindings>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            
+                                            <StackPanel>
+                                                <TextBlock Text="{Binding WifiName}" FontSize="18" FontFamily="Segoe UI Emoji" FontWeight="SemiBold"/>
+                                                <TextBlock Text="{Binding Password}" FontSize="12" FontFamily="Consolas" Foreground="{StaticResource TextSecondary}" Margin="0,4,0,2"/>
+                                                <TextBlock Text="{Binding Timestamp, StringFormat='Generated: {0:MMM dd, yyyy hh:mm tt}'}" FontSize="11" Foreground="{StaticResource TextSecondary}"/>
+                                            </StackPanel>
+                                            
+                                            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                                <TextBlock Text="→" FontSize="20" Foreground="{StaticResource AccentColor}" VerticalAlignment="Center" Margin="0,0,15,0"/>
+                                                
+                                                <Button Command="{Binding DataContext.DeleteHistoryEntryCommand, RelativeSource={RelativeSource AncestorType=ListBox}}" 
+                                                        CommandParameter="{Binding}"
+                                                        Padding="8,5"
+                                                        ToolTip="Delete Entry">
+                                                    <Button.Style>
+                                                        <Style TargetType="Button">
+                                                            <Setter Property="Background" Value="Transparent"/>
+                                                            <Setter Property="BorderThickness" Value="0"/>
+                                                            <Setter Property="Cursor" Value="Hand"/>
+                                                            <Setter Property="Template">
+                                                                <Setter.Value>
+                                                                    <ControlTemplate TargetType="Button">
+                                                                        <Border Background="{TemplateBinding Background}" CornerRadius="4">
+                                                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}"/>
+                                                                        </Border>
+                                                                        <ControlTemplate.Triggers>
+                                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                                <Setter Property="Background" Value="#FFE5E5"/>
+                                                                            </Trigger>
+                                                                        </ControlTemplate.Triggers>
+                                                                    </ControlTemplate>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </Style>
+                                                    </Button.Style>
+                                                    <TextBlock Text="🗑️" FontSize="14"/>
+                                                </Button>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Border>
+                    
+                    <!-- Empty State -->
+                    <Border Height="300">
+                        <Border.Style>
+                            <Style TargetType="Border" BasedOn="{StaticResource CardStyle}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding HasHistory}" Value="False">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <TextBlock Text="📜" FontSize="48" HorizontalAlignment="Center" Margin="0,0,0,15"/>
+                            <TextBlock Text="No history yet" FontSize="16" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                            <TextBlock Text="Generate WiFi QR codes to see them here" FontSize="14" Foreground="{StaticResource TextSecondary}" HorizontalAlignment="Center" Margin="0,5,0,0"/>
+                        </StackPanel>
+                    </Border>
                 </StackPanel>
 
                  <!-- Settings View -->

@@ -2,7 +2,9 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using EmojiWifiWindows.Models;
 using EmojiWifiWindows.Services;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -18,6 +20,7 @@ namespace EmojiWifiWindows.ViewModels
         private readonly WifiService _wifiService;
         private readonly SettingsService _settingsService;
         private readonly AnalyticsService _analyticsService;
+        private readonly HistoryService _historyService;
 
         [ObservableProperty]
         private string? _generatedWifiName;
@@ -81,6 +84,9 @@ namespace EmojiWifiWindows.ViewModels
         [ObservableProperty]
         private bool _isEulaVisible;
 
+        [ObservableProperty]
+        private ObservableCollection<WifiHistoryEntry> _historyEntries = new();
+
         public bool AnalyticsEnabled
         {
             get => _settingsService.Settings.AnalyticsEnabled;
@@ -102,9 +108,13 @@ namespace EmojiWifiWindows.ViewModels
             _qrService = new QrService();
             _wifiService = new WifiService();
             _settingsService = new SettingsService();
+            _historyService = new HistoryService();
             
             // Initialize Analytics
             _analyticsService = new AnalyticsService(_settingsService);
+
+            // Load History
+            LoadHistoryEntries();
 
             // Check EULA status
             IsEulaVisible = !_settingsService.Settings.EulaAccepted;
@@ -162,6 +172,9 @@ namespace EmojiWifiWindows.ViewModels
 
             // 2. Generate Password
             RegeneratePassword();
+            
+            // 3. Save to History
+            SaveToHistory();
             
             _ = _analyticsService.LogEvent("generate_wifi", new { style = SelectedStyle.ToString() });
         }
@@ -278,5 +291,53 @@ namespace EmojiWifiWindows.ViewModels
         partial void OnIncludeLowerChanged(bool value) => RegeneratePassword();
         partial void OnIncludeNumbersChanged(bool value) => RegeneratePassword();
         partial void OnIncludeSpecialChanged(bool value) => RegeneratePassword();
+
+        private void SaveToHistory()
+        {
+            if (!string.IsNullOrEmpty(GeneratedWifiName) && !string.IsNullOrEmpty(GeneratedPassword))
+            {
+                var entry = new WifiHistoryEntry
+                {
+                    WifiName = GeneratedWifiName,
+                    Password = GeneratedPassword,
+                    Timestamp = DateTime.Now,
+                    Style = SelectedStyle
+                };
+                
+                _historyService.AddEntry(entry);
+                LoadHistoryEntries();
+            }
+        }
+
+        private void LoadHistoryEntries()
+        {
+            var entries = _historyService.GetRecentEntries();
+            HistoryEntries = new ObservableCollection<WifiHistoryEntry>(entries);
+            OnPropertyChanged(nameof(HasHistory));
+        }
+
+        public bool HasHistory => HistoryEntries.Count > 0;
+
+        [RelayCommand]
+        public void LoadFromHistory(WifiHistoryEntry entry)
+        {
+            GeneratedWifiName = entry.WifiName;
+            GeneratedPassword = entry.Password;
+            SelectedStyle = entry.Style;
+            UpdateQrCode();
+            _ = _analyticsService.LogEvent("load_from_history");
+        }
+
+        [RelayCommand]
+        public void DeleteHistoryEntry(WifiHistoryEntry entry)
+        {
+            if (entry == null) return;
+
+            HistoryEntries.Remove(entry);
+            _historyService.RemoveEntry(entry);
+            OnPropertyChanged(nameof(HasHistory));
+            
+            _ = _analyticsService.LogEvent("delete_history_entry");
+        }
     }
 }

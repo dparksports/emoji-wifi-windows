@@ -8,7 +8,9 @@ namespace EmojiWifiWindows.Services
     {
         public bool EulaAccepted { get; set; } = false;
         public bool AnalyticsEnabled { get; set; } = true;
-        public string AnalyticsClientId { get; set; } = Guid.NewGuid().ToString();
+        public string AnalyticsClientId { get; set; } = string.Empty;
+        public string? AnalyticsSessionId { get; set; }
+        public DateTime? AnalyticsLastEventTime { get; set; }
     }
 
     public class SettingsService
@@ -38,10 +40,24 @@ namespace EmojiWifiWindows.Services
                 {
                     Settings = new AppSettings();
                 }
+
+                // Ensure client ID is generated and persisted
+                if (string.IsNullOrEmpty(Settings.AnalyticsClientId))
+                {
+                    Settings.AnalyticsClientId = Guid.NewGuid().ToString();
+                    SaveSettings(); // Persist immediately to ensure it's never lost
+                }
             }
             catch
             {
                 Settings = new AppSettings();
+                
+                // Even in error case, ensure client ID exists and is persisted
+                if (string.IsNullOrEmpty(Settings.AnalyticsClientId))
+                {
+                    Settings.AnalyticsClientId = Guid.NewGuid().ToString();
+                    SaveSettings();
+                }
             }
         }
 
