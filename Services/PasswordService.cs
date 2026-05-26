@@ -15,7 +15,7 @@ namespace EmojiWifiWindows.Services
             if (includeLower) chars.Append("abcdefghijklmnopqrstuvwxyz");
             if (includeUpper) chars.Append("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
             if (includeNumbers) chars.Append("0123456789");
-            if (includeSpecial) chars.Append("!@#$%^&*()_+-=[]{}|;:.,<>?");
+            if (includeSpecial) chars.Append("!@#$%^&*()_+-=[]{}|:.,<>?");
 
             if (chars.Length == 0) return "";
 
