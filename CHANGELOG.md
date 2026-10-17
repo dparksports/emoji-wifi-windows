@@ -2,9 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versions are date-based (calendar versioning, `YYYY.M.D`) starting with 2026.10.17.
 
-## [1.4.3] - 2026-10-17
+## [2026.10.17]
 
 ### Fixed
 - Wi-Fi QR codes now escape `\ ; , : "` in the SSID and password per the Wi-Fi Network Config format, so phones parse every generated password correctly (previously passwords containing `:` or `,` produced mis-parsed codes).
