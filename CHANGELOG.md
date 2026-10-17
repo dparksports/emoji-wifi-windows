@@ -16,6 +16,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - WiFi names longer than the 32-byte SSID limit are rejected with a clear message before connecting.
 
 ### Changed
+- The download is now a **self-contained single-file build**: one `EmojiWifiWindows.exe` (~70 MB) with the .NET runtime baked in — no runtime to install, nothing to configure, unzip and run. (The download used to be 2 MB but required the .NET 8 Desktop Runtime.)
 - Removed all telemetry/analytics (Google Analytics). The app is now fully offline — no data ever leaves your PC — and the Settings page reflects that.
 - Restored the semicolon to the special-character set (QR escaping now makes it safe).
 - EULA: corrected the product name (it previously referenced a different product) and updated the privacy section to reflect the removal of telemetry.

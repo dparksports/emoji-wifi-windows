@@ -20,8 +20,19 @@ jobs:
         with:
           dotnet-version: 8.0.x
 
-      - name: Publish
-        run: dotnet publish EmojiWifiWindows.csproj --configuration Release --runtime win-x64 --self-contained false -o publish
+      # Self-contained single-file build: the .NET runtime travels inside the exe,
+      # so users never have to install anything (~70 MB download, zero prerequisites).
+      - name: Publish self-contained single-file exe
+        run: >
+          dotnet publish EmojiWifiWindows.csproj
+          --configuration Release
+          --runtime win-x64
+          --self-contained true
+          -p:PublishSingleFile=true
+          -p:IncludeNativeLibrariesForSelfExtract=true
+          -p:EnableCompressionInSingleFile=true
+          -p:DebugType=none
+          -o publish
 
       - name: Package clean zip
         run: Compress-Archive -Path publish/* -DestinationPath "EmojiWifiWindows_${{ github.ref_name }}_Clean.zip"

@@ -30,16 +30,12 @@ A clean little window with everything on one screen: name ideas, your password, 
 
 ## 📥 Get it (free, ~1 minute)
 
-1. **Download** the zip from the [latest release](https://github.com/dparksports/emoji-wifi-windows/releases/latest).
+1. **Download** the zip from the [latest release](https://github.com/dparksports/emoji-wifi-windows/releases/latest). It's about **70 MB** — that's the app carrying its own engine inside, so you never have to install anything else (no ".NET", no runtimes, nothing).
 2. **Unzip it** — right-click the file → *Extract All*.
 3. **Double-click `EmojiWifiWindows.exe`**. That's the whole install — nothing else gets added to your computer.
 4. First time? Windows may show a blue "Windows protected your PC" screen because we're a small free app without an expensive Microsoft certificate. Click **More info → Run anyway**. Our code is open — anyone can read it [right here](https://github.com/dparksports/emoji-wifi-windows).
 
-<details>
-<summary>If the app asks for a ".NET Runtime" (some computers)</summary>
-
-The app uses Microsoft's free .NET 8 Desktop Runtime. If Windows says it's missing, grab it here: [aka.ms/desktop-runtime](https://dotnet.microsoft.com/download/dotnet/8.0) — download, next-next-finish, then run the app again.
-</details>
+> The first launch takes a few extra seconds (the app unpacks its engine once). After that it opens instantly.
 
 ## ❓ Questions people actually ask
 
