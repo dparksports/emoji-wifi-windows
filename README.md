@@ -1,60 +1,68 @@
-# 📶 Create Your Own WiFi Network with Emoji
+# 📶 EmojiWifi — give your WiFi a personality
 
-**Emoji Wifi** for Windows allows you to turn boring network names into fun, expressive emoji identities. Whether you want a "Space Station" 🚀🛰️🌌 or a "Pizza Party" 🍕🎉, this app makes it easy to generate, secure, and share your new network identity.
+Your WiFi name doesn't have to be `NETGEAR-5G` or `xfinity-1234`. It can be **🍕🍕🍕**.
 
-![Emoji Wifi Screenshot](screenshots/app_screenshot.png)
+EmojiWifi is a tiny free app for Windows that helps you dream up a fun emoji WiFi name, get a super-strong password to go with it, and turn it into a **QR code** that friends join by pointing their phone camera at it. No typing, no reading passwords out loud, no "is it a zero or the letter O?"
 
-## 🎨 Design Your Network
-
-Stop using "NETGEAR-5G" or "xfinity-123". Make your WiFi stand out on every device scan.
-
-1.  **Generate a Name**:
-    - **Combinations**: Get inspired by curated themes like *Jungle* 🐯🌴 or *Ocean* 🐙🌊.
-    - **Single Emojis**: Go minimal with a single icon like 🏠 or 🔒.
-    - **Manual Control**: Type any emojis you want to create your perfect custom name.
-
-2.  **Secure It**:
-    - Automatically generate strong, random passwords.
-    - Customize password length and complexity (symbols, numbers) to match your security needs.
-
-3.  **Share It**:
-    - Instantly generate a **WiFi QR Code**.
-    - Friends can scan the code with their phone to join instantly—no typing required.
-    - **New in v1.4.1**: Save your favorite configurations to **History** and reload them anytime.
-
-## 📦 Download
-
-[**Download v1.4.1 (Windows x64 Clean Zip)**](https://github.com/dparksports/emoji-wifi-windows/releases/download/v1.4.1/EmojiWifiWindows_v1.4.1_Clean.zip)
-
-*Just unzip and run `EmojiWifiWindows.exe`!*
-
-## 🚀 Features
-
-- **Creating**:
-  - ✨ **Emoji Styles**: Combination, Single, Random, or Manual.
-  - 🔐 **Secure Passwords**: Built-in cryptographic generator.
-  - 📜 **History**: Auto-saves your creations. Delete ones you don't need.
-
-- **Using**:
-  - 📱 **QR Code Sharing**: The easiest way to get guests online.
-  - 📷 **QR Import**: Lost a password? Scan a saved QR image to retrieve the credentials.
-  - 📋 **One-Click Copy**: Copy SSID or Password to clipboard instantly.
-
-- **Private & Safe**:
-  - **Offline First**: No internet needed to generate or save.
-  - **Privacy**: Analytics are opt-in/opt-out.
-  - **Clean**: Native Windows app, no bloatware.
-
-## 💻 Tech Stack
-
-- **Target**: Windows 10/11 (x64)
-- **Framework**: .NET 10 & WPF
-- **Code**: Native C# with MVVM architecture
-- **Open Source**: Licensed under Apache 2.0
-
-## License
-
-This project is licensed under the Apache 2.0 License - see the [LICENSE](LICENSE) file for details.
+![Three easy steps: pick a fun name, get a strong password, share your QR code](infographics/infographic-3-steps.png)
 
 ---
-*Make your WiFi smile* 😊
+
+## 🚀 How it all works
+
+**Once**, you set things up — it takes about two minutes. **Then**, everyone who visits just scans and they're online.
+
+![Setup: design it, tell your router, post the QR. Guests point their camera and they're in.](infographics/infographic-setup-join.png)
+
+> **The one honest step other tools skip:** your WiFi name lives inside your router, so after you design it here, copy the name and password into your router's app or settings page (the login is usually printed on a sticker under the router). One time, done forever.
+
+## 💡 Need a name? Steal one of these
+
+![Fun WiFi name ideas: Space Station, Pizza Party, Gaming Hub, Love Zone, Cat Zone, Midnight Vibes](infographics/infographic-ideas-tips.png)
+
+Or type your own — any emojis you like. **Golden rule: keep it to about 8 emoji or fewer** so it shows up nicely on every phone and laptop.
+
+## 🖥️ What the app looks like
+
+![EmojiWifi app screenshot](screenshots/app_screenshot.png)
+
+A clean little window with everything on one screen: name ideas, your password, your QR code, and a history of setups you've used before.
+
+## 📥 Get it (free, ~1 minute)
+
+1. **Download** the zip from the [latest release](https://github.com/dparksports/emoji-wifi-windows/releases/latest).
+2. **Unzip it** — right-click the file → *Extract All*.
+3. **Double-click `EmojiWifiWindows.exe`**. That's the whole install — nothing else gets added to your computer.
+4. First time? Windows may show a blue "Windows protected your PC" screen because we're a small free app without an expensive Microsoft certificate. Click **More info → Run anyway**. Our code is open — anyone can read it [right here](https://github.com/dparksports/emoji-wifi-windows).
+
+<details>
+<summary>If the app asks for a ".NET Runtime" (some computers)</summary>
+
+The app uses Microsoft's free .NET 8 Desktop Runtime. If Windows says it's missing, grab it here: [aka.ms/desktop-runtime](https://dotnet.microsoft.com/download/dotnet/8.0) — download, next-next-finish, then run the app again.
+</details>
+
+## ❓ Questions people actually ask
+
+**Does EmojiWifi change my router by itself?**
+No. You design your name and password here, then paste them into your router once. We'd rather you know exactly what's happening to your internet.
+
+**Can people join without typing anything?**
+Yes — that's the whole point! iPhone and Android cameras understand WiFi QR codes natively. Point, tap the popup, online. 🎉
+
+**I lost my WiFi password! 😱**
+Open EmojiWifi → *Import QR Code* → pick any QR image you saved or screenshotted. Your name and password come right back.
+
+**Is it safe? Where does my data go?**
+Nowhere. The app works fully offline — no account, no sign-up, no tracking, nothing sent anywhere. Your names, passwords, and history stay in a little file on your own PC.
+
+**What does it cost?**
+Nothing. Free and open source (Apache 2.0 license).
+
+**Windows only?**
+For now, yes — Windows 10 or 11.
+
+---
+
+*Made for everyone whose WiFi deserves a better name.* 😊
+
+**For developers:** built with .NET 8 + WPF in C#, tests and CI included — see [CHANGELOG.md](CHANGELOG.md) and the [source](https://github.com/dparksports/emoji-wifi-windows). Licensed under [Apache 2.0](LICENSE).
