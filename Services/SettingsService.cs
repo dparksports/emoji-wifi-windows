@@ -7,10 +7,6 @@ namespace EmojiWifiWindows.Services
     public class AppSettings
     {
         public bool EulaAccepted { get; set; } = false;
-        public bool AnalyticsEnabled { get; set; } = true;
-        public string AnalyticsClientId { get; set; } = string.Empty;
-        public string? AnalyticsSessionId { get; set; }
-        public DateTime? AnalyticsLastEventTime { get; set; }
     }
 
     public class SettingsService
@@ -34,30 +30,13 @@ namespace EmojiWifiWindows.Services
                 if (File.Exists(SettingsPath))
                 {
                     string json = File.ReadAllText(SettingsPath);
+                    // Unknown keys from older versions (analytics opt-out etc.) are ignored.
                     Settings = JsonSerializer.Deserialize<AppSettings>(json) ?? new AppSettings();
-                }
-                else
-                {
-                    Settings = new AppSettings();
-                }
-
-                // Ensure client ID is generated and persisted
-                if (string.IsNullOrEmpty(Settings.AnalyticsClientId))
-                {
-                    Settings.AnalyticsClientId = Guid.NewGuid().ToString();
-                    SaveSettings(); // Persist immediately to ensure it's never lost
                 }
             }
             catch
             {
                 Settings = new AppSettings();
-                
-                // Even in error case, ensure client ID exists and is persisted
-                if (string.IsNullOrEmpty(Settings.AnalyticsClientId))
-                {
-                    Settings.AnalyticsClientId = Guid.NewGuid().ToString();
-                    SaveSettings();
-                }
             }
         }
 

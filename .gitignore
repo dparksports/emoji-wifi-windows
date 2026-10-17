@@ -61,3 +61,10 @@ Desktop.ini
 
 # Recycle Bin used on file shares
 $RECYCLE.BIN/
+
+# Release artifacts (publish via GitHub Releases, not the repo)
+*.zip
+publish/
+
+# Test results
+TestResults/

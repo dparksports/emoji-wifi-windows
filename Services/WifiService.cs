@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -8,37 +9,70 @@ namespace EmojiWifiWindows.Services
 {
     public class WifiService
     {
-        public async Task<string> ConnectToNetwork(string ssid, string password)
+        public async Task<(bool Success, string Message)> ConnectToNetwork(string ssid, string password)
         {
             try
             {
-                // 1. Create Profile XML
                 string profileXml = GenerateProfileXml(ssid, password);
                 string profilePath = Path.Combine(Path.GetTempPath(), $"WifiProfile_{Guid.NewGuid()}.xml");
-                File.WriteAllText(profilePath, profileXml);
+                // BOM so netsh reliably decodes non-ASCII (emoji) SSIDs as UTF-8.
+                File.WriteAllText(profilePath, profileXml, new UTF8Encoding(encoderShouldEmitUTF8Identifier: true));
 
-                // 2. Add Profile
-                string addOutput = await RunNetshCommand($"wlan add profile filename=\"{profilePath}\"");
-                
-                // Cleanup XML
+                (int addExitCode, string addOutput) = await RunNetshCommand($"wlan add profile filename=\"{profilePath}\"");
+
                 if (File.Exists(profilePath)) File.Delete(profilePath);
 
-                if (!addOutput.ToLower().Contains("added"))
+                if (addExitCode != 0)
                 {
-                    return $"Failed to add profile: {addOutput}";
+                    return (false, $"Failed to add profile: {addOutput}");
                 }
 
-                // 3. Connect
-                string connectOutput = await RunNetshCommand($"wlan connect name=\"{ssid}\"");
-                return connectOutput;
+                (int connectExitCode, string connectOutput) = await RunNetshCommand($"wlan connect name=\"{ssid}\"");
+                return connectExitCode == 0
+                    ? (true, connectOutput)
+                    : (false, $"Failed to connect: {connectOutput}");
             }
             catch (Exception ex)
             {
-                return $"Error: {ex.Message}";
+                return (false, $"Error: {ex.Message}");
             }
         }
 
-        private async Task<string> RunNetshCommand(string arguments)
+        internal static string GenerateProfileXml(string ssid, string password)
+        {
+            // SSID and password come from manual entry / QR import and can contain
+            // XML-significant characters (<, >, &, quotes) that must be escaped.
+            string name = SecurityElement.Escape(ssid) ?? string.Empty;
+            string key = SecurityElement.Escape(password) ?? string.Empty;
+
+            return $@"<?xml version=""1.0""?>
+<WLANProfile xmlns=""http://www.microsoft.com/networking/WLAN/profile/v1"">
+    <name>{name}</name>
+    <SSIDConfig>
+        <SSID>
+            <name>{name}</name>
+        </SSID>
+    </SSIDConfig>
+    <connectionType>ESS</connectionType>
+    <connectionMode>auto</connectionMode>
+    <MSM>
+        <security>
+            <authEncryption>
+                <authentication>WPA2PSK</authentication>
+                <encryption>AES</encryption>
+                <useOneX>false</useOneX>
+            </authEncryption>
+            <sharedKey>
+                <keyType>passPhrase</keyType>
+                <protected>false</protected>
+                <keyMaterial>{key}</keyMaterial>
+            </sharedKey>
+        </security>
+    </MSM>
+</WLANProfile>";
+        }
+
+        private static async Task<(int ExitCode, string Output)> RunNetshCommand(string arguments)
         {
             ProcessStartInfo psi = new ProcessStartInfo("netsh", arguments)
             {
@@ -48,52 +82,22 @@ namespace EmojiWifiWindows.Services
                 CreateNoWindow = true
             };
 
-            using (Process p = new Process())
+            using (Process p = new Process { StartInfo = psi })
             {
-                p.StartInfo = psi;
                 p.Start();
-                string output = await p.StandardOutput.ReadToEndAsync();
-                string error = await p.StandardError.ReadToEndAsync();
+
+                // Drain both pipes concurrently; reading one to completion first
+                // can deadlock when the other pipe's buffer fills.
+                Task<string> stdoutTask = p.StandardOutput.ReadToEndAsync();
+                Task<string> stderrTask = p.StandardError.ReadToEndAsync();
+                await Task.WhenAll(stdoutTask, stderrTask);
                 await p.WaitForExitAsync();
-                return string.IsNullOrWhiteSpace(error) ? output.Trim() : $"{output}\nError: {error}".Trim();
+
+                string output = string.IsNullOrWhiteSpace(stderrTask.Result)
+                    ? stdoutTask.Result.Trim()
+                    : $"{stdoutTask.Result.Trim()}\nError: {stderrTask.Result.Trim()}";
+                return (p.ExitCode, output);
             }
-        }
-
-        private string GenerateProfileXml(string ssid, string password)
-        {
-            // Hex encoding for SSID to handle Emojis properly? 
-            // Windows Profiles use <name> as the profile name, and <SSID><name> as the SSID name.
-            // Emojis work in XML if encoding is UTF-8.
-            
-            // Note: Wifi passwords in XML are usually protected or plain. 
-            // keyType 'passPhrase' with 'protected' false means plain text password.
-
-            string profile = $@"<?xml version=""1.0""?>
-<WLANProfile xmlns=""http://www.microsoft.com/networking/WLAN/profile/v1"">
-	<name>{ssid}</name>
-	<SSIDConfig>
-		<SSID>
-			<name>{ssid}</name>
-		</SSID>
-	</SSIDConfig>
-	<connectionType>ESS</connectionType>
-	<connectionMode>auto</connectionMode>
-	<MSM>
-		<security>
-			<authEncryption>
-				<authentication>WPA2PSK</authentication>
-				<encryption>AES</encryption>
-				<useOneX>false</useOneX>
-			</authEncryption>
-			<sharedKey>
-				<keyType>passPhrase</keyType>
-				<protected>false</protected>
-				<keyMaterial>{password}</keyMaterial>
-			</sharedKey>
-		</security>
-	</MSM>
-</WLANProfile>";
-            return profile;
         }
     }
 }

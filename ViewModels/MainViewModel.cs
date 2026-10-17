@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text;
 using System.Windows;
 using System.Windows.Media.Imaging;
 
@@ -19,7 +21,6 @@ namespace EmojiWifiWindows.ViewModels
         private readonly QrService _qrService;
         private readonly WifiService _wifiService;
         private readonly SettingsService _settingsService;
-        private readonly AnalyticsService _analyticsService;
         private readonly HistoryService _historyService;
 
         [ObservableProperty]
@@ -87,20 +88,6 @@ namespace EmojiWifiWindows.ViewModels
         [ObservableProperty]
         private ObservableCollection<WifiHistoryEntry> _historyEntries = new();
 
-        public bool AnalyticsEnabled
-        {
-            get => _settingsService.Settings.AnalyticsEnabled;
-            set
-            {
-                if (_settingsService.Settings.AnalyticsEnabled != value)
-                {
-                    _settingsService.Settings.AnalyticsEnabled = value;
-                    _settingsService.SaveSettings();
-                    OnPropertyChanged();
-                }
-            }
-        }
-
         public MainViewModel()
         {
             _emojiService = new EmojiDataService();
@@ -109,9 +96,6 @@ namespace EmojiWifiWindows.ViewModels
             _wifiService = new WifiService();
             _settingsService = new SettingsService();
             _historyService = new HistoryService();
-            
-            // Initialize Analytics
-            _analyticsService = new AnalyticsService(_settingsService);
 
             // Load History
             LoadHistoryEntries();
@@ -125,21 +109,14 @@ namespace EmojiWifiWindows.ViewModels
             SelectedStyle = WifiStyle.SingleEmoji;
 
             GenerateWifi(); // Initial generation
-            
-            if (!IsEulaVisible)
-            {
-                _ = _analyticsService.LogEvent("app_launch");
-            }
         }
 
         [RelayCommand]
-        public async Task AcceptEula()
+        public void AcceptEula()
         {
             _settingsService.Settings.EulaAccepted = true;
             _settingsService.SaveSettings();
             IsEulaVisible = false;
-            await _analyticsService.LogEvent("eula_accepted");
-            await _analyticsService.LogEvent("app_launch");
         }
 
         [RelayCommand]
@@ -164,24 +141,25 @@ namespace EmojiWifiWindows.ViewModels
                     GeneratedWifiName = _emojiService.GetRandomLengthEmoji();
                     break;
                 case WifiStyle.Manual:
-                    // Preserve existing or clear? Let's keep it to allow editing or start fresh.
-                    // If it was null, make it empty string to avoid null issues in text box
+                    // Keep whatever the user typed; just make sure it's not null
+                    // so the text box has a string to bind to.
                     if (GeneratedWifiName == null) GeneratedWifiName = string.Empty;
                     break;
             }
 
             // 2. Generate Password
             RegeneratePassword();
-            
-            // 3. Save to History
-            SaveToHistory();
-            
-            _ = _analyticsService.LogEvent("generate_wifi", new { style = SelectedStyle.ToString() });
         }
 
         [RelayCommand]
         public void RegeneratePassword()
         {
+            if (!IncludeUpper && !IncludeLower && !IncludeNumbers && !IncludeSpecial)
+            {
+                PasswordLengthDescription = "Select at least one character type";
+                return;
+            }
+
             GeneratedPassword = _passwordService.GeneratePassword((int)PasswordLength, IncludeUpper, IncludeLower, IncludeNumbers, IncludeSpecial);
             PasswordLengthDescription = $"{(int)PasswordLength} characters";
             UpdateQrCode();
@@ -196,7 +174,7 @@ namespace EmojiWifiWindows.ViewModels
             }
 
             var bytes = _qrService.GenerateWifiQrCode(GeneratedWifiName, GeneratedPassword);
-            
+
             var image = new BitmapImage();
             using (var mem = new MemoryStream(bytes))
             {
@@ -215,24 +193,63 @@ namespace EmojiWifiWindows.ViewModels
         [RelayCommand]
         public void CopyName()
         {
-            Clipboard.SetText(GeneratedWifiName ?? string.Empty);
-            _ = _analyticsService.LogEvent("copy_name");
+            if (TrySetClipboard(GeneratedWifiName))
+            {
+                JoinStatusMessage = "Name copied to clipboard.";
+                SaveToHistory();
+            }
         }
 
         [RelayCommand]
         public void CopyPassword()
         {
-            Clipboard.SetText(GeneratedPassword ?? string.Empty);
-            _ = _analyticsService.LogEvent("copy_password");
+            if (TrySetClipboard(GeneratedPassword))
+            {
+                JoinStatusMessage = "Password copied to clipboard.";
+                SaveToHistory();
+            }
+        }
+
+        private bool TrySetClipboard(string? text)
+        {
+            try
+            {
+                Clipboard.SetText(text ?? string.Empty);
+                return true;
+            }
+            catch (ExternalException)
+            {
+                // The clipboard is owned by another process; it usually frees up on retry.
+                JoinStatusMessage = "Clipboard is busy — try again in a moment.";
+                return false;
+            }
         }
 
         [RelayCommand]
         public async Task JoinWifi()
         {
+            string ssid = GeneratedWifiName ?? string.Empty;
+
+            if (string.IsNullOrWhiteSpace(ssid) || string.IsNullOrEmpty(GeneratedPassword))
+            {
+                JoinStatusMessage = "Enter a WiFi name and password first.";
+                return;
+            }
+
+            // 802.11 SSIDs are limited to 32 bytes; emoji take up to 4+ bytes each.
+            if (Encoding.UTF8.GetByteCount(ssid) > 32)
+            {
+                JoinStatusMessage = "WiFi name is too long — SSIDs are limited to 32 bytes (roughly 8 emoji).";
+                return;
+            }
+
             JoinStatusMessage = "Connecting...";
-            string result = await _wifiService.ConnectToNetwork(GeneratedWifiName ?? string.Empty, GeneratedPassword ?? string.Empty);
+            (bool success, string result) = await _wifiService.ConnectToNetwork(ssid, GeneratedPassword);
             JoinStatusMessage = result;
-            await _analyticsService.LogEvent("join_wifi", new { status = result });
+            if (success)
+            {
+                SaveToHistory();
+            }
         }
 
         [RelayCommand]
@@ -245,16 +262,16 @@ namespace EmojiWifiWindows.ViewModels
                 var result = _qrService.ParseWifiQrCode(dialog.FileName);
                 if (result.ssid != null)
                 {
+                    SelectedStyle = WifiStyle.Manual;
                     GeneratedWifiName = result.ssid;
                     GeneratedPassword = result.password ?? "";
                     UpdateQrCode();
                     JoinStatusMessage = "QR Code Imported successfully!";
-                    _ = _analyticsService.LogEvent("import_qr_success");
+                    SaveToHistory();
                 }
                 else
                 {
                     JoinStatusMessage = "Could not find Wi-Fi QR code in image.";
-                    _ = _analyticsService.LogEvent("import_qr_failed");
                 }
             }
         }
@@ -303,7 +320,7 @@ namespace EmojiWifiWindows.ViewModels
                     Timestamp = DateTime.Now,
                     Style = SelectedStyle
                 };
-                
+
                 _historyService.AddEntry(entry);
                 LoadHistoryEntries();
             }
@@ -325,7 +342,6 @@ namespace EmojiWifiWindows.ViewModels
             GeneratedPassword = entry.Password;
             SelectedStyle = entry.Style;
             UpdateQrCode();
-            _ = _analyticsService.LogEvent("load_from_history");
         }
 
         [RelayCommand]
@@ -336,8 +352,6 @@ namespace EmojiWifiWindows.ViewModels
             HistoryEntries.Remove(entry);
             _historyService.RemoveEntry(entry);
             OnPropertyChanged(nameof(HasHistory));
-            
-            _ = _analyticsService.LogEvent("delete_history_entry");
         }
     }
 }

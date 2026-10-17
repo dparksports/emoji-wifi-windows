@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
@@ -6,9 +6,16 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
-    <Version>1.4.2</Version>
+    <Version>1.4.3</Version>
     <ApplicationIcon>app_icon.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <!-- The test project lives under the project root; keep it out of the app build. -->
+    <Compile Remove="EmojiWifiWindows.Tests\**" />
+    <None Remove="EmojiWifiWindows.Tests\**" />
+    <EmbeddedResource Remove="EmojiWifiWindows.Tests\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <Resource Include="app_icon.ico" />

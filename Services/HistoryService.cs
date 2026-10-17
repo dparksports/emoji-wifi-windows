@@ -9,20 +9,26 @@ namespace EmojiWifiWindows.Services
 {
     public class HistoryService
     {
-        private static readonly string HistoryPath = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "EmojiWifiWindows",
-            "history.json");
-
+        private readonly string _historyPath;
         private const int MaxHistoryEntries = 50;
+
+        public HistoryService()
+            : this(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "EmojiWifiWindows"))
+        {
+        }
+
+        public HistoryService(string baseDirectory)
+        {
+            _historyPath = Path.Combine(baseDirectory, "history.json");
+        }
 
         public List<WifiHistoryEntry> LoadHistory()
         {
             try
             {
-                if (File.Exists(HistoryPath))
+                if (File.Exists(_historyPath))
                 {
-                    string json = File.ReadAllText(HistoryPath);
+                    string json = File.ReadAllText(_historyPath);
                     var history = JsonSerializer.Deserialize<List<WifiHistoryEntry>>(json);
                     return history ?? new List<WifiHistoryEntry>();
                 }
@@ -40,16 +46,26 @@ namespace EmojiWifiWindows.Services
             try
             {
                 var history = LoadHistory();
-                
-                // Add new entry at the beginning (newest first)
-                history.Insert(0, entry);
-                
-                // Limit to max entries
+
+                // Collapse consecutive duplicates so repeated use of the same
+                // configuration refreshes its timestamp instead of piling up.
+                if (history.Count > 0 &&
+                    history[0].WifiName == entry.WifiName &&
+                    history[0].Password == entry.Password &&
+                    history[0].Style == entry.Style)
+                {
+                    history[0].Timestamp = entry.Timestamp;
+                }
+                else
+                {
+                    history.Insert(0, entry);
+                }
+
                 if (history.Count > MaxHistoryEntries)
                 {
                     history = history.Take(MaxHistoryEntries).ToList();
                 }
-                
+
                 SaveHistory(history);
             }
             catch (Exception ex)
@@ -63,9 +79,9 @@ namespace EmojiWifiWindows.Services
             try
             {
                 var history = LoadHistory();
-                var item = history.FirstOrDefault(x => 
-                    x.WifiName == entryToRemove.WifiName && 
-                    x.Timestamp == entryToRemove.Timestamp && 
+                var item = history.FirstOrDefault(x =>
+                    x.WifiName == entryToRemove.WifiName &&
+                    x.Timestamp == entryToRemove.Timestamp &&
                     x.Password == entryToRemove.Password);
 
                 if (item != null)
@@ -90,14 +106,14 @@ namespace EmojiWifiWindows.Services
         {
             try
             {
-                string? dir = Path.GetDirectoryName(HistoryPath);
+                string? dir = Path.GetDirectoryName(_historyPath);
                 if (dir != null && !Directory.Exists(dir))
                 {
                     Directory.CreateDirectory(dir);
                 }
 
                 string json = JsonSerializer.Serialize(history, new JsonSerializerOptions { WriteIndented = true });
-                File.WriteAllText(HistoryPath, json);
+                File.WriteAllText(_historyPath, json);
             }
             catch (Exception ex)
             {

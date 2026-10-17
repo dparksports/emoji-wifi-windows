@@ -151,7 +151,7 @@
                 <!-- App Header -->
                 <StackPanel Grid.Row="0" Margin="24,30,24,20">
                     <TextBlock Text="EmojiWifi" FontSize="26" FontWeight="Bold" Foreground="{StaticResource TextPrimary}"/>
-                    <TextBlock Text="v1.4.2 Windows" FontSize="12" Foreground="{StaticResource TextSecondary}" Margin="2,4,0,0"/>
+                    <TextBlock Text="v1.4.3 Windows" FontSize="12" Foreground="{StaticResource TextSecondary}" Margin="2,4,0,0"/>
                 </StackPanel>
 
                 <!-- Navigation -->
@@ -546,14 +546,10 @@
                     <TextBlock Text="Settings" FontSize="28" FontWeight="SemiBold" Margin="0,0,0,30"/>
                      <Border Style="{StaticResource CardStyle}">
                          <StackPanel>
-                             <TextBlock Text="Privacy &amp; Analytics" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,15"/>
-                             <TextBlock Text="Help us improve EmojiWifi by sending anonymous usage data." TextWrapping="Wrap" Foreground="{StaticResource TextSecondary}" Margin="0,0,0,15"/>
-                             
-                             <StackPanel Orientation="Horizontal">
-                                 <CheckBox IsChecked="{Binding AnalyticsEnabled}" Content="Share Usage Data"/>
-                             </StackPanel>
-                             
-                             <TextBlock Text="We do not collect any personal information or WiFi passwords." FontSize="12" Foreground="{StaticResource TextSecondary}" Margin="25,5,0,0"/>
+                             <TextBlock Text="Privacy" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,15"/>
+                             <TextBlock Text="EmojiWifi runs entirely on your PC. It contains no telemetry, analytics, or tracking of any kind, and never sends your data anywhere." TextWrapping="Wrap" Foreground="{StaticResource TextSecondary}" Margin="0,0,0,15"/>
+
+                             <TextBlock Text="Your history and settings are stored locally in %LOCALAPPDATA%\EmojiWifiWindows and never leave your device." FontSize="12" Foreground="{StaticResource TextSecondary}" TextWrapping="Wrap"/>
                          </StackPanel>
                      </Border>
                 </StackPanel>
@@ -578,10 +574,10 @@
                     <FlowDocumentScrollViewer Grid.Row="1" Margin="0,0,0,20" VerticalScrollBarVisibility="Auto" BorderThickness="0" Background="Transparent">
                         <FlowDocument FontFamily="Segoe UI" FontSize="14" TextAlignment="Left" PagePadding="0">
                             <Paragraph FontWeight="Bold" FontSize="16">END USER LICENSE AGREEMENT AND TERMS OF SERVICE</Paragraph>
-                            <Paragraph Foreground="#666">Last Updated: January 16, 2026</Paragraph>
+                            <Paragraph Foreground="#666">Last Updated: October 17, 2026</Paragraph>
                             
                             <Paragraph>
-                                <Bold>IMPORTANT — READ CAREFULLY:</Bold> This End User License Agreement ("Agreement") is a legal agreement between you (either an individual or a single entity, hereinafter "User" or "You") and MagicPoint.ai ("Company", "We", or "Us") for the software product "Auto Command" (the "Software"), which includes computer software and may include associated media, printed materials, and "online" or electronic documentation.
+                                <Bold>IMPORTANT — READ CAREFULLY:</Bold> This End User License Agreement ("Agreement") is a legal agreement between you (either an individual or a single entity, hereinafter "User" or "You") and MagicPoint.ai ("Company", "We", or "Us") for the software product "Emoji Wifi" (the "Software"), which includes computer software and may include associated media, printed materials, and "online" or electronic documentation.
                             </Paragraph>
                             
                             <Paragraph>
@@ -602,12 +598,7 @@
                             </List>
 
                             <Paragraph FontWeight="Bold">3. PRIVACY AND DATA COLLECTION</Paragraph>
-                            <Paragraph>By using the Software, you acknowledge and agree that the Company collects and processes data to fix bugs, improve the Software, and enhance user experience.</Paragraph>
-                            
-                            <Paragraph><Bold>3.1 Anonymous Telemetry:</Bold> The Company uses Google Firebase Analytics and similar tools to automatically collect anonymous usage data, including but not limited to: device information (OS version, hardware model), session duration, feature usage statistics, and crash reports.</Paragraph>
-                            <Paragraph><Bold>3.2 Purpose of Collection:</Bold> This data is collected strictly for the purpose of software development, specifically to identify technical failures, optimize performance, and prioritize feature development.</Paragraph>
-                            <Paragraph><Bold>3.3 No Personally Identifiable Information (PII):</Bold> The Company does not collect names, email addresses, or other personally identifiable information through the Software's telemetry systems unless explicitly provided by you (e.g., via a support email).</Paragraph>
-                            <Paragraph><Bold>3.4 Opt-Out:</Bold> You may opt out of data collection at any time by disabling the "Share Usage Data" option in the Software’s settings menu.</Paragraph>
+                            <Paragraph>The Software runs entirely on your device and does not collect, transmit, or share any telemetry, analytics, or usage data. WiFi names, passwords, and history generated by the Software are stored only on your device and are never sent anywhere.</Paragraph>
 
                             <Paragraph FontWeight="Bold">4. PROPRIETARY RIGHTS</Paragraph>
                             <Paragraph>The Software is protected by copyright laws and international copyright treaties, as well as other intellectual property laws and treaties. The Software is licensed, not sold. All title and intellectual property rights in and to the Software are owned by the Company.</Paragraph>
