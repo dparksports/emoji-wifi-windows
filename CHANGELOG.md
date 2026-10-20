@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versions are date-based (calendar versioning, `YYYY.M.D`) starting with 2026.10.17.
 
+## [2026.10.19]
+
+### Added
+- **Emoji pool expanded from 62 to 1,364 emojis.** The pool is now the full Unicode 14.0 emoji catalog (fully-qualified emoji only; flags, skin tones, and ZWJ sequences are excluded because they render inconsistently across phones, routers, and Windows).
+- New **Emoji Picker** tab: browse emojis by category (smileys, animals, food, travel, games…), search by name, and click any emoji to make it your WiFi name.
+- The app now knows which emojis you've **already used** (from your history): they're dimmed in the picker, a checkbox hides them entirely, and random generation prefers unused ones by default ("Skip emojis I've already used").
+- **Emoji combinations are auto-generated** from the catalog by theme (2–3 same-category emojis, always within the 32-byte SSID limit), so the ideas list keeps growing beyond the 64 hand-picked classics.
+- New **"1,300+ emojis. Zero repeats."** infographic for the Emoji Picker, and the three existing guides refreshed for the bigger pool (all four rebuilt cleanly at 1200px).
+
+### Changed
+- Emoji data now ships as an embedded resource generated from Unicode's official `emoji-test.txt` by `tools/generate_emoji_catalog.py` — updating to a future Unicode release is a one-command regeneration.
+- The combinations list now renders emojis in color.
+- README rewritten around the Emoji Picker, with a new FAQ for "I've used all the good emojis".
+- Every catalog emoji and generated combination is covered by unit tests (uniqueness, no flags/skin tones/ZWJ, 32-byte SSID limit).
+
 ## [2026.10.17]
 
 ### Fixed

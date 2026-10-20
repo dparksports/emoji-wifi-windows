@@ -151,12 +151,13 @@
                 <!-- App Header -->
                 <StackPanel Grid.Row="0" Margin="24,30,24,20">
                     <TextBlock Text="EmojiWifi" FontSize="26" FontWeight="Bold" Foreground="{StaticResource TextPrimary}"/>
-                    <TextBlock Text="v2026.10.17 Windows" FontSize="12" Foreground="{StaticResource TextSecondary}" Margin="2,4,0,0"/>
+                    <TextBlock Text="v2026.10.19 Windows" FontSize="12" Foreground="{StaticResource TextSecondary}" Margin="2,4,0,0"/>
                 </StackPanel>
 
                 <!-- Navigation -->
                 <StackPanel Grid.Row="1" Margin="12,0">
                     <RadioButton x:Name="NavGenerate" Content="Generate WiFi" IsChecked="True" GroupName="Nav" Style="{StaticResource NavButtonStyle}" Tag="Generate"/>
+                    <RadioButton x:Name="NavPicker" Content="Emoji Picker" GroupName="Nav" Style="{StaticResource NavButtonStyle}" Tag="Picker"/>
                     <RadioButton x:Name="NavOptions" Content="Password Options" GroupName="Nav" Style="{StaticResource NavButtonStyle}" Tag="Options"/>
                     <RadioButton x:Name="NavCombinations" Content="View Combinations" GroupName="Nav" Style="{StaticResource NavButtonStyle}" Tag="Combinations"/>
                     <RadioButton x:Name="NavImport" Content="Import QR Code" GroupName="Nav" Style="{StaticResource NavButtonStyle}" Tag="Import"/>
@@ -227,6 +228,10 @@
                              </ComboBox>
                          </StackPanel>
                     </Grid>
+
+                    <CheckBox Content="Skip emojis I've already used" IsChecked="{Binding PreferUnusedEmojis}" Margin="0,0,0,25"
+                              FontSize="13" Foreground="{StaticResource TextSecondary}"
+                              ToolTip="Random picks prefer emojis that don't appear in any of your past network names."/>
 
                     <!-- Main Generated Result Card -->
                     <Border Style="{StaticResource CardStyle}">
@@ -328,6 +333,80 @@
                     <Button Command="{Binding JoinWifiCommand}" Content="Connect to Network" HorizontalAlignment="Center" Background="Transparent" Foreground="{StaticResource AccentColor}" BorderThickness="0" Margin="0,10"/>
                 </StackPanel>
 
+                <!-- Emoji Picker View -->
+                <StackPanel>
+                    <StackPanel.Style>
+                        <Style TargetType="StackPanel">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsChecked, ElementName=NavPicker}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </StackPanel.Style>
+
+                    <TextBlock Text="Emoji Picker" FontSize="28" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                    <TextBlock Text="{Binding EmojiUsageSummary, StringFormat='{}{0} — click any emoji to make it your WiFi name.'}" FontSize="13" Foreground="{StaticResource TextSecondary}" Margin="0,0,0,20"/>
+
+                    <Grid Margin="0,0,0,15">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1.2*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock Text="Category" FontSize="12" Foreground="{StaticResource TextSecondary}" Margin="0,0,0,6"/>
+                            <ComboBox ItemsSource="{Binding EmojiCategories}" SelectedItem="{Binding SelectedEmojiCategory, Mode=TwoWay}" Padding="10,8" FontSize="14"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Margin="12,0,0,0">
+                            <TextBlock Text="Search all emojis" FontSize="12" Foreground="{StaticResource TextSecondary}" Margin="0,0,0,6"/>
+                            <TextBox Text="{Binding EmojiSearchText, UpdateSourceTrigger=PropertyChanged}" Padding="10,8" FontSize="14"/>
+                        </StackPanel>
+                        <CheckBox Grid.Column="2" Content="Hide emojis I've already used" IsChecked="{Binding HideUsedEmojis}" VerticalAlignment="Bottom" Margin="12,0,0,2" FontSize="12" ToolTip="Dimmed emojis already appear in one of your past network names."/>
+                    </Grid>
+
+                    <TextBlock Text="{Binding PickerCountText}" FontSize="12" Foreground="{StaticResource TextSecondary}" Margin="0,0,0,10"/>
+
+                    <Border Style="{StaticResource CardStyle}" Padding="10">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" Height="470">
+                            <ItemsControl ItemsSource="{Binding FilteredEmojiItems}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Width="54" Height="54" Margin="2" CornerRadius="8" Cursor="Hand" ToolTip="{Binding TooltipText}">
+                                            <Border.InputBindings>
+                                                <MouseBinding MouseAction="LeftClick" Command="{Binding DataContext.SelectEmojiCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}"/>
+                                            </Border.InputBindings>
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="Background" Value="Transparent"/>
+                                                    <Setter Property="Opacity" Value="1"/>
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Background" Value="#F0F7FF"/>
+                                                        </Trigger>
+                                                        <DataTrigger Binding="{Binding IsUsed}" Value="True">
+                                                            <Setter Property="Opacity" Value="0.4"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            <emoji:TextBlock Text="{Binding Emoji}" FontSize="26" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </Border>
+
+                    <TextBlock Text="{Binding EmojiPickerStatus}" Foreground="Green" FontSize="13" Margin="0,15,0,0" TextWrapping="Wrap"/>
+                </StackPanel>
+
                 <!-- Password Options Mockup (Placeholder for polishing) -->
                 <StackPanel>
                      <StackPanel.Style>
@@ -382,7 +461,7 @@
                                             <ColumnDefinition Width="120"/>
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
-                                        <TextBlock Text="{Binding Emojis}" FontSize="28" FontFamily="Segoe UI Emoji" VerticalAlignment="Center"/>
+                                        <emoji:TextBlock Text="{Binding Emojis}" FontSize="28" VerticalAlignment="Center"/>
                                         <TextBlock Grid.Column="1" Text="{Binding Name}" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center" Foreground="{StaticResource TextPrimary}"/>
                                     </Grid>
                                 </DataTemplate>

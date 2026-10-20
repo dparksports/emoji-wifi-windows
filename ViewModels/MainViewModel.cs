@@ -88,16 +88,67 @@ namespace EmojiWifiWindows.ViewModels
         [ObservableProperty]
         private ObservableCollection<WifiHistoryEntry> _historyEntries = new();
 
+        private const string AllCategoriesLabel = "All categories";
+
+        // Bound on rendered tiles: the picker's WrapPanel realizes every item,
+        // so broad "All categories" views are capped instead of rendering 1,300+ tiles.
+        private const int MaxPickerItems = 300;
+
+        private List<EmojiItemViewModel> _allEmojiItems = new();
+
+        private HashSet<string> _usedEmojis = new();
+
+        [ObservableProperty]
+        private List<EmojiItemViewModel> _filteredEmojiItems = new();
+
+        [ObservableProperty]
+        private List<string> _emojiCategories = new();
+
+        [ObservableProperty]
+        private string _selectedEmojiCategory = AllCategoriesLabel;
+
+        [ObservableProperty]
+        private string _emojiSearchText = string.Empty;
+
+        [ObservableProperty]
+        private bool _hideUsedEmojis;
+
+        [ObservableProperty]
+        private bool _preferUnusedEmojis = true;
+
+        [ObservableProperty]
+        private string _emojiPickerStatus = string.Empty;
+
+        [ObservableProperty]
+        private string _pickerCountText = string.Empty;
+
+        public string EmojiUsageSummary =>
+            $"{_allEmojiItems.Count(i => !i.IsUsed)} of {_allEmojiItems.Count} emojis still unused";
+
         public MainViewModel()
+            : this(historyService: null)
+        {
+        }
+
+        public MainViewModel(HistoryService? historyService)
         {
             _emojiService = new EmojiDataService();
             _passwordService = new PasswordService();
             _qrService = new QrService();
             _wifiService = new WifiService();
             _settingsService = new SettingsService();
-            _historyService = new HistoryService();
+            _historyService = historyService ?? new HistoryService();
 
-            // Load History
+            // Build the emoji picker from the catalog before history loads, so
+            // used-marking inside LoadHistoryEntries sees the tiles.
+            _allEmojiItems = _emojiService.AllEmojis
+                .Select(e => new EmojiItemViewModel { Emoji = e.Emoji, Name = e.Name, Category = e.Category })
+                .ToList();
+            EmojiCategories = new List<string> { AllCategoriesLabel }
+                .Concat(_emojiService.Categories)
+                .ToList();
+
+            // Load History (also marks emojis already used by past networks)
             LoadHistoryEntries();
 
             // Check EULA status
@@ -135,10 +186,10 @@ namespace EmojiWifiWindows.ViewModels
                     GeneratedWifiName = _emojiService.GetRandomCombination().Emojis;
                     break;
                 case WifiStyle.SingleEmoji:
-                    GeneratedWifiName = _emojiService.GetRandomSingleEmoji();
+                    GeneratedWifiName = _emojiService.GetRandomSingleEmoji(PreferUnusedEmojis ? _usedEmojis : null);
                     break;
                 case WifiStyle.RandomLength:
-                    GeneratedWifiName = _emojiService.GetRandomLengthEmoji();
+                    GeneratedWifiName = _emojiService.GetRandomLengthEmoji(1, 4, PreferUnusedEmojis ? _usedEmojis : null);
                     break;
                 case WifiStyle.Manual:
                     // Keep whatever the user typed; just make sure it's not null
@@ -288,6 +339,59 @@ namespace EmojiWifiWindows.ViewModels
             }
         }
 
+        [RelayCommand]
+        public void SelectEmoji(EmojiItemViewModel item)
+        {
+            if (item == null) return;
+
+            SelectedStyle = WifiStyle.SingleEmoji;
+            GeneratedWifiName = item.Emoji;
+            UpdateQrCode();
+            EmojiPickerStatus = $"{item.Emoji} “{item.Name}” is now your WiFi name — open Generate WiFi to see its QR code.";
+        }
+
+        partial void OnSelectedEmojiCategoryChanged(string value) => RefreshEmojiItems();
+        partial void OnEmojiSearchTextChanged(string value) => RefreshEmojiItems();
+        partial void OnHideUsedEmojisChanged(bool value) => RefreshEmojiItems();
+
+        private void RefreshEmojiItems()
+        {
+            IEnumerable<EmojiItemViewModel> items = _allEmojiItems;
+
+            var query = EmojiSearchText.Trim();
+            if (query.Length > 0)
+            {
+                // Search spans every category; typing narrows it down.
+                items = items.Where(i => i.Name.Contains(query, StringComparison.OrdinalIgnoreCase));
+            }
+            else if (!string.Equals(SelectedEmojiCategory, AllCategoriesLabel, StringComparison.Ordinal))
+            {
+                items = items.Where(i => i.Category == SelectedEmojiCategory);
+            }
+
+            if (HideUsedEmojis)
+            {
+                items = items.Where(i => !i.IsUsed);
+            }
+
+            var matched = items.ToList();
+            FilteredEmojiItems = matched.Take(MaxPickerItems).ToList();
+            PickerCountText = FilteredEmojiItems.Count < matched.Count
+                ? $"Showing {FilteredEmojiItems.Count} of {matched.Count} matches — keep typing or pick a category to narrow down"
+                : $"{matched.Count} emojis";
+        }
+
+        private void RefreshUsedEmojis()
+        {
+            _usedEmojis = _emojiService.FindUsedEmojis(HistoryEntries.Select(h => h.WifiName));
+            foreach (var item in _allEmojiItems)
+            {
+                item.IsUsed = _usedEmojis.Contains(item.Emoji);
+            }
+            OnPropertyChanged(nameof(EmojiUsageSummary));
+            RefreshEmojiItems();
+        }
+
         public int SelectedStyleIndex
         {
             get => (int)SelectedStyle;
@@ -331,6 +435,7 @@ namespace EmojiWifiWindows.ViewModels
             var entries = _historyService.GetRecentEntries();
             HistoryEntries = new ObservableCollection<WifiHistoryEntry>(entries);
             OnPropertyChanged(nameof(HasHistory));
+            RefreshUsedEmojis();
         }
 
         public bool HasHistory => HistoryEntries.Count > 0;
@@ -352,6 +457,7 @@ namespace EmojiWifiWindows.ViewModels
             HistoryEntries.Remove(entry);
             _historyService.RemoveEntry(entry);
             OnPropertyChanged(nameof(HasHistory));
+            RefreshUsedEmojis();
         }
     }
 }
