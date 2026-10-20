@@ -87,7 +87,7 @@ Nowhere. The app works fully offline — no account, no sign-up, no tracking, no
 Nothing. Free and open source (Apache 2.0 license).
 
 **Windows only?**
-For now, yes — Windows 10 or 11.
+Windows 10 or 11 here — but EmojiWifi is a family: grab the [Mac version](https://github.com/dparksports/emoji-wifi-mac) (native SwiftUI, with camera scanning and auto-join) or the [Ubuntu terminal version](https://github.com/dparksports/emoji-wifi-ubuntu). All three share the same emoji catalog and honest, offline design.
 
 ---
 
