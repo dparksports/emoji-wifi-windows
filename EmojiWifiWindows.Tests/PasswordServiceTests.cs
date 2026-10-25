@@ -44,5 +44,21 @@ namespace EmojiWifiWindows.Tests
             Assert.Throws<ArgumentException>(
                 () => _service.GeneratePassword(12, false, false, false, false));
         }
+
+        [Fact]
+        public void GeneratePassword_NeverContainsWifiQrEscapableCharacters()
+        {
+            // \ ; , : " get backslash-escaped in WIFI: QR payloads, and readers
+            // that don't unescape display the backslash as part of the password —
+            // so the generator must never emit them.
+            char[] escapable = { '\\', ';', ',', ':', '"' };
+
+            for (int i = 0; i < 200; i++)
+            {
+                string password = _service.GeneratePassword(63, true, true, true, true);
+
+                Assert.Empty(password.Intersect(escapable));
+            }
+        }
     }
 }

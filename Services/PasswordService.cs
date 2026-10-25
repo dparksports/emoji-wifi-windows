@@ -9,7 +9,10 @@ namespace EmojiWifiWindows.Services
         private const string LowerCase = "abcdefghijklmnopqrstuvwxyz";
         private const string UpperCase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         private const string Digits = "0123456789";
-        private const string Special = "!@#$%^&*()_+-=[]{}|:.,<>?;";
+        // Excludes \ ; , : " — the Wi-Fi QR format backslash-escapes those, and some
+        // QR/phone readers show the escapes literally (e.g. "pa\;ss") instead of
+        // the actual password.
+        private const string Special = "!@#$%^&*()_+-=[]{}|.<>?";
 
         public string GeneratePassword(int length, bool includeUpper, bool includeLower, bool includeNumbers, bool includeSpecial)
         {

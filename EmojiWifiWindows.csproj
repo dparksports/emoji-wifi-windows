@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
-    <Version>2026.10.19</Version>
+    <Version>2026.10.24</Version>
     <ApplicationIcon>app_icon.ico</ApplicationIcon>
   </PropertyGroup>
 

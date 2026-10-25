@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versions are date-based (calendar versioning, `YYYY.M.D`) starting with 2026.10.17.
 
+## [2026.10.24]
+
+### Fixed
+- **Generated passwords no longer contain `: , ;`.** The Wi-Fi QR format backslash-escapes `\ ; , : "` inside passwords, and some QR/phone readers display the escapes literally (e.g. `pa\;ss` instead of `pa;ss`). Generated passwords now avoid those characters entirely, so every reader — including ones that don't unescape — shows the exact password. The special-character pool shrinks from 25 to 22 symbols (under 1% less entropy per character); passwords you type yourself are unaffected and still round-trip through QR import correctly.
+
 ## [2026.10.19]
 
 ### Added
